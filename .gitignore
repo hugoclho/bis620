@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+git_ssh
+git_ssh.pub
+.DS_Store
