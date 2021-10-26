@@ -18,5 +18,351 @@ knitr::opts_chunk$set(
 library(bis620)
 # devtools::build_vignettes()
 # remotes::install_local(build_vignettes = TRUE, force = TRUE)
+# browseVignettes()
 ```
+
+# homework 1 contents
+
+```{r, message=FALSE}
+library(haven)
+library(dplyr)
+library(tibble)
+library(purrr)
+library(tidyr)
+
+library(ggstatsplot)
+library(ggplot2)
+library(plotly) 
+
+# library(trelliscopejs)
+```
+
+## Description of the study
+
+What was the purpose of the study? How many people were enrolled? Is the treatment data available or is it just standard of care? etc.
+
+The data we will use is NCT00460265 from DataSphere. The data was provided from Amgen and the study completed in 2010.
+
+The main purpose of the study is
+
+ - to assess whether panitumumab plus chemotherapy improves overall survival (OS) compared to chemotherapy alone as first line treatment for metastatic and/or recurrent squamous cell carcinoma of the head and neck (SCCHN). 
+
+Moreover, there were three other objectives that was conducted during the study:
+
+ - the study evaluated progression-free survival (PFS), overall response rate (ORR), duration of response (DOR), time to progression (TTP) and safety.
+ - the study evaluated time to response (TTR) and patient reported outcomes (PROs) utilizing the validated EUROQOL EQ-5D health state index score and the overall health rating.
+ - the study investigated potential biomarker development based on assessment of blood and tumor cells and the proposed mechanism of action of study drugs.
+ 
+The sample size is 650 subjects in total with 325 per each treatment arm: panitumumab plus chemotherapy and chemotherapy alone. But the actual enrollment is 658 participants. The study was completed in May 2010 which the entire dataset and the study description is now available in DataSphere. The treatment data is also available as SAS data file and recorded as "Treatment code", "Assigned Treatment", "Actual Treatment Code", and "Actual Treatment", which recorded the treatment each study subject was assigned and the actual treatment they got.
+
+
+
+## Exploratory Analysis
+
+Create an exploratory analysis, using tables, visualizations, and text that motivates a specific hypothesis related to the data.
+
+After reading the documentation of this study, we will explore this dataset with the interest of the difference in number of adverse events, the proportion of severe adverse events and the number of days of progression free survival by treatment groups. We will explore it by the following steps:
+
+1. Descriptive Statistics of interested variables
+2. Plot the proportion of adverse events by treatment groups
+3. Plot the histograms of interested continuous variables
+4. Plot the box-plots between:
+   - Treatment (ATRT) vs Progression Free Survival (PFS)
+   - Treatment (ATRT) vs Number of Adverse Events (NUM_AE)
+   - Cumulative Dose (CDOSE) vs Progression Free Survival (PFS)
+5. Plot correlations heat map among interested variables
+6. Hypothesis and testing
+
+
+### Data Loading
+
+```{r}
+# NCT00460265 Head and Neck Amgen 2010
+
+# Define a path name and use grep() to detect the sas7bdat dataset in the folder,
+# then append everything from the dataset into a list
+path <- "/Users/hugoho/OneDrive/Yale/2021 Fall/BIS 620 Data Science Software Systems/Assignments/Assignment 1/NCT00460265"
+
+fns <- dir(path)
+fns <- fns[grep("sas7bdat", fns)]
+
+data_list <- map(fns, ~ read_sas(file.path(path, .x)))
+
+# Get rid of the ".sas7bdat" by replacing with " ", prefix are the names of the sas dataset
+# Then, assign them to the names in each of the data_list
+prefix <- gsub(".sas7bdat", "", fns)
+names(data_list) <- prefix
+```
+
+### Combining Datasets 
+
+In this part, we examined throughout different data sets in the study and combine columns we needed for further exploration.
+
+```{r}
+dose <- data_list$asendpt %>% 
+  select(STUDYID, SUBJID, AGE, ATRT, contains('DOSE')) %>% 
+  select(STUDYID, SUBJID, AGE, ATRT, CDOSE, CWDOSE)
+
+aeendpt <- data_list$aeendpt %>% 
+  select(STUDYID, SUBJID, TRTDUR, ATRT, PFSDYLRE)
+
+aevent <- data_list$ae %>%
+  mutate(AESEV = 
+           factor(AESEV, 
+                  levels = c("Mild", "Moderate", "Severe", 
+                             "Life threatening", "Fatal"))) %>%
+  mutate(aesev_num = as.integer(AESEV)) %>%
+  select(SUBJID, AESEV, AESEVCD, AESOC, AESTDYI, AEENDYI, AELLT, aesev_num) %>%
+  nest(data_ae = -SUBJID) %>%
+  mutate(NUM_AE = map_int(data_ae, nrow)) %>%
+  mutate(BAD_AESEVCD = map_dbl(data_ae, ~ mean(as.integer(.x[,"AESEVCD"][[1]]) > 2)) )
+
+comb_dat <- full_join(dose, aeendpt)
+comb_dat$ATRT <- as.factor(comb_dat$ATRT)
+comb_dat <- full_join(comb_dat, aevent)
+
+#comb_dat <- comb_dat[ , ! names(comb_dat) %in% c("data_ae")]
+```
+
+### Descriptive Statistics:
+
+ - AGE: Study participants' age in Years at Screening
+ - TRTDUR: Treatment Duration
+ - PFS: Progression Free Survival. Number of days from the date of enrollment to a) the last evaluable assessment or death b) the date of the first observed disease progression.
+ - NUM_AE: Self created variable that counts the total number of adverse events per each study subjects.
+ - BAD_AESEVCD: Grade/Severity of adverse events with severity of 3 or higher.
+ - CDOSE: Cumulative Dose (mg). The sum of EXPOSURE.DOSE for panitumumab.
+
+```{r}
+# Descriptive Statistics
+
+var_name <- c("AGE", "TRTDUR", "PFS", "CDOSE", "BAD_AESEVCD", "NUM_AE")
+tot_ob <- c(length(comb_dat$AGE), length(comb_dat$TRTDUR), length(comb_dat$PFSDYLRE), length(comb_dat$CDOSE), length(comb_dat$BAD_AESEVCD), length(comb_dat$NUM_AE))
+
+Min <- c(min(comb_dat$AGE, na.rm = TRUE), min(comb_dat$TRTDUR, na.rm = TRUE), min(comb_dat$PFSDYLRE, na.rm = TRUE), min(comb_dat$CDOSE, na.rm = TRUE), min(comb_dat$BAD_AESEVCD, na.rm = TRUE), min(comb_dat$NUM_AE, na.rm = TRUE))
+
+mean <- c(mean(comb_dat$AGE, na.rm = TRUE), mean(comb_dat$TRTDUR, na.rm = TRUE), mean(comb_dat$PFSDYLRE, na.rm = TRUE), mean(comb_dat$CDOSE, na.rm = TRUE), mean(comb_dat$BAD_AESEVCD, na.rm = TRUE), mean(comb_dat$NUM_AE, na.rm = TRUE))
+
+Max <- c(max(comb_dat$AGE, na.rm = TRUE), max(comb_dat$TRTDUR, na.rm = TRUE), max(comb_dat$PFSDYLRE, na.rm = TRUE), max(comb_dat$CDOSE, na.rm = TRUE), max(comb_dat$BAD_AESEVCD, na.rm = TRUE), max(comb_dat$NUM_AE, na.rm = TRUE))
+
+miss <- c(sum(is.na(comb_dat$AGE)), sum(is.na(comb_dat$TRTDUR)), sum(is.na(comb_dat$PFSDYLRE)), sum(is.na(comb_dat$CDOSE)), sum(is.na(comb_dat$BAD_AESEVCD)), sum(is.na(comb_dat$NUM_AE)))
+
+desc_stats <- data.frame(
+  Variable_Name = var_name, 
+  Total_observation = tot_ob, 
+  Minimum = Min,
+  Mean = mean,
+  Maxmum = Max,
+  Missing = miss
+)
+desc_stats
+```
+
+### Data Exploration and Visualization:
+
+```{r}
+ae_list <-  as.data.frame(table(data_list$ae$AETERM))
+names(ae_list) <-  c('AE','Freq')
+
+# extract top 20 adverse events
+head(arrange(ae_list,desc(Freq)), 20)
+ae_top5 <- as.character(head(arrange(ae_list,desc(Freq)), 20)[[1]])
+
+ae_top5_df <- data_list$ae %>% filter(AETERM%in% ae_top5)
+
+p_AEbyTRT <- ggplot(aes(x=AETERM, fill=ATRT), data=ae_top5_df) +
+  geom_bar(position = position_fill()) + 
+  labs(x = "Adverse Events",
+       y = "Percentage",
+       fill="Actual Treatment",
+       title='Figure 1: Proportion of Adverse Events by Treatments') + theme(axis.text.x = element_text(angle = 90))
+ggplotly(p_AEbyTRT)
+```
+
+From the plot above we discovered Panitumumab + Chemotherapy treatment group has a greater proportion in over half of the top 20 adverse events, compared to the control group using Chemotherapy alone. We will further investigate the relationship between number of adverse events and treatment later.
+
+
+#### Histograms
+
+In this section we investigate the density / disdtribution of our continuous variables: CDOSE, PFSDYLRE, NUM_AE, BAD_AESEVCD
+
+```{r, warning=FALSE}
+# CDOSE: Cumulative dose of Panitumumab + Chemotherapy
+# create plots to visualize the Sum of CDOSE for panitumumab
+p_cdose <- ggplot(dose, aes(x=CDOSE)) + 
+              geom_histogram(bins = 30) +
+              ggtitle('Figure 2: Density of the Sum of EXPOSURE.DOSE for Panitumumab')
+ggplotly(p_cdose)
+
+# PFSDYLRE: Progression Free Survival
+# create plots to visualize PFSDYLRE
+p_PFSDYLRE <- ggplot(aeendpt, aes(x=PFSDYLRE)) + 
+              geom_histogram(bins = 30) +
+              ggtitle('Figure 3: Density of Progression-Free Survival (days)')
+ggplotly(p_PFSDYLRE)
+
+# NUM_AE: Number of adverse events
+# create plots to visualize NUM_AE
+p_nAE <- ggplot(comb_dat, aes(x=NUM_AE)) + 
+              geom_histogram(bins = 30) +
+              ggtitle('Figure 4: Density of Number of Adverse Events (NUM_AE)')
+ggplotly(p_nAE)
+
+# BAD_AESEVCD: Proportion of Severe Adverse Events (Grade 3 or 4 AE)
+# create plots to visualize BAD_AESEVCD
+p_nAE <- ggplot(comb_dat, aes(x=BAD_AESEVCD)) + 
+              geom_histogram(bins = 30) +
+              ggtitle('Figure 5: Density of Severe Adverse Events Proportions')
+ggplotly(p_nAE)
+```
+
+#### Box-plots 
+
+```{r, warning=FALSE}
+# create plots to visualize Treatments vs Progression Free Survival
+p_ATRT_PFS <- ggplot(comb_dat, aes(x=ATRT, y=PFSDYLRE)) + 
+              geom_boxplot(aes(fill = ATRT)) +
+              labs(x = "Actual Treatment",
+                   y = "Progression Free Survival",
+                   fill="Actual Treatment",
+                   title='Figure 6: Boxplot of Treatments vs Progression Free Survival')
+ggplotly(p_ATRT_PFS)
+```
+
+From the box-plot above we found that compared to median progress-free survival (PFS) of 121 days among control group, treatment group has a higher median PFS of 146 days. The variation within each group are relatively small. Whether treatment increases PFS or not is yet to be tested. 
+
+```{r, warning=FALSE}
+# create plots to visualize Treatments vs Adverse Events
+p_ATRT_AE <- ggplot(comb_dat, aes(x=ATRT, y=NUM_AE)) + 
+              geom_boxplot(aes(fill = ATRT)) +
+              labs(x = "Actual Treatment",
+                   y = "Number of Adverse Events",
+                   fill="Actual Treatment",
+                   title='Figure 7: Boxplot of Treatments vs Adverse Events')
+ggplotly(p_ATRT_AE)
+```
+From the box-plot above we found that compared to median number of adverse events of 12 among control group, treatment group has a higher median of 18.5. The variation within control group is relatively small, and the variation within treatment group is greater. Therefore, whether treatment increases PFS or not is unclear and should be further tested. 
+
+
+```{r, warning=FALSE}
+# create plots to visualize Treatments vs Adverse Events
+p_ATRT_BADAE <- ggplot(comb_dat, aes(x=ATRT, y=BAD_AESEVCD)) + 
+              geom_boxplot(aes(fill = ATRT)) +
+              labs(x = "Actual Treatment",
+                   y = "Proportion of Severe Adverse Events",
+                   fill="Actual Treatment",
+                   title='Figure 8: Boxplot of Treatments vs Proportion of Severe Adverse Events')
+ggplotly(p_ATRT_BADAE)
+```
+
+From the box-plot above we found that compared to median proportion of severe adverse events of 0.17 (17%) among control group, treatment group has a lower median proportion of 0.14 (14%). The variation within treatment group is relatively smaller, and the variation within control group is greater. However, it does not seem to have a significant difference in the proportion of severe adverse events within both group, we will verify this later in our hypothesis.
+
+
+#### Scatter plots
+
+```{r, warning=FALSE}
+# create plots to visualize AGE vs Progression Free Survival
+p_AGE_PFS <- ggplot(comb_dat, aes(x = AGE, y = jitter(PFSDYLRE))) +
+              geom_point(alpha = 0.5) +
+              labs(y = "Progression Free Survival", 
+                   title="Figure 9: Scatter plot of AGE vs Progression Free Survival")
+ggplotly(p_AGE_PFS)
+
+# create plots to visualize CDOSE vs Proportion of Severe Adverse Events
+p_CDOSE_SAE <- ggplot(comb_dat, aes(x = CDOSE, y = jitter(BAD_AESEVCD))) +
+              geom_point(alpha = 0.5) +
+              labs(y = "Proportion of Severe Adverse Events",
+                   title="Figure 10: Scatter plot of CDOSE vs Proportion of Severe Adverse Events")
+ggplotly(p_CDOSE_SAE)
+
+# create plots to visualize CDOSE vs Progression Free Survival
+p_CDOSE_PFS <- ggplot(comb_dat, aes(x = CDOSE, y = jitter(PFSDYLRE))) +
+              geom_point(alpha = 0.5) +
+              labs(y = "Proportion of Severe Adverse Events",
+                   title="Figure 11: Scatter plot of CDOSE vs Proportion of Severe Adverse Events")
+ggplotly(p_CDOSE_PFS)
+
+mod <- lm(PFSDYLRE ~ CDOSE, data = comb_dat)
+summary(mod)
+```
+
+From the scatter plot above we found that there does not seem to be a obvious relations between: Age and PFS, Cumulative Dose and Severe Adverse Event Proportion. 
+
+However, we identified a positive linear relationship between Cumulative Dose and PFS. We are not sure if the Cumulative Dose of (Panitumumab + Chemotherapy) combination has a true positive relationship with Progression-free Survival, or it is simply due to the fact that the longer PFS a patient has, the more dosage of treatment they will receive overtime.  
+
+Therefore, we will develop a hypothesis testing to examine the causal relation between the two variables, and find out whether or not the combined treatment has a clinical significance on PFS. 
+
+
+#### Correlation Heatmap of the independent and dependent variables
+
+```{r}
+# check correlations among our variables
+library(ggcorrplot)
+cor_data_df <- comb_dat %>% 
+  select(AGE, CDOSE, NUM_AE, BAD_AESEVCD, PFSDYLRE) %>% 
+  drop_na()
+
+cor(cor_data_df)
+
+# Figure 12
+ggplotly(ggcorrplot(cor(cor_data_df)) + ggtitle("Figure 12 Correlation Heatmap"))
+
+```
+
+We examined the correlation between independent and dependent variables.
+
+Strong Positive Correlations:
+
+- Cumulative Dose and Progression-free Survival (0.68)
+
+Weak Positive Correlations:
+
+- Cumulative Dose and Number of Adverse Events (0.36)
+- Age and Severe Adverse Events (0.10)
+
+
+Weak Negative Correlations:
+
+- Cumulative Dose and Severe Adverse Events (-0.29)
+- Age and Number of Adverse Events (-0.07)
+
+
+
+## Hypothesis and Plan for testing 
+### Hypothesis testing, interpretation and further plans of testing
+
+State a concise hypothesis, that you can answer with the existing data or with the existing data plus the treatment data (if it's not available). The hypothesis should either improve a potential follow up study or help to better characterize the existing disease population.
+A final point will be given for either testing the hypothesis and providing an interpretation or going further in one of the other parts. Going further could include a literature review of what is known about the disease, creating a particularly good exploration, or some other effort that distinguishes your write-up.
+
+
+Based on the above visualization, we have the following three hypotheses:
+
+ - 1. The addition of panitumumab to chemotherapy treatment will **increase the number of adverse events** compared to chemotherapy alone for metastatic and/or recurrent squamous cell carcinoma of the head and neck (SCCHN).
+ 
+ - 2. The addition of panitumumab to chemotherapy treatment will **mitigate the degree of severity of adverse events** compared to chemotherapy alone for metastatic and/or recurrent squamous cell carcinoma of the head and neck (SCCHN).
+ 
+ - 3. The addition of panitumumab to chemotherapy treatment will **improve progression free survival** compared to chemotherapy alone for metastatic and/or recurrent squamous cell carcinoma of the head and neck (SCCHN).
+ 
+Next, we will conduct two sample t-tests to compare the interested variables by treatment groups.
+
+
+```{r}
+ttest1 <- t.test(comb_dat$NUM_AE[comb_dat$ATRT=="Chemotherapy"], comb_dat$NUM_AE[comb_dat$ATRT=="panit. plus chemotherapy"])
+ttest1
+
+ttest2 <- t.test(comb_dat$BAD_AESEVCD[comb_dat$ATRT=="Chemotherapy"], comb_dat$BAD_AESEVCD[comb_dat$ATRT=="panit. plus chemotherapy"])
+ttest2
+
+ttest3 <- t.test(comb_dat$PFSDYLRE[comb_dat$ATRT=="Chemotherapy"], comb_dat$PFSDYLRE[comb_dat$ATRT=="panit. plus chemotherapy"])
+ttest3
+```
+
+
+Given the test results above, we can only be confident to conclude that the addition of panitumumab to chemotherapy treatment will increase the number of adverse events compared to chemotherapy alone for metastatic and/or recurrent squamous cell carcinoma of the head and neck (SCCHN), with p-value approximately zero and test statistics is -4.8. 
+
+However, for the other two hypotheses: degree of severity of adverse events and progression free survival by treatment. We both got 95% confidence intervals that contain zero and p-values that are greater than 0.05. Thus, we fail to reject our null hypothesis. To investigate the two hypotheses, we need to analysis whether the outliers are reasonable to include or not as well as using survival analysis like `log rank test` to conduct more thoroughly study.
+
+Since we are unable to confirm the treatment effect of panitumumab in our previous tests, the result of the t test may hint that panitumumab does not help prolong progression-free survival (PFS), regardless of its cumulative dose. The positive linear relationship of Cumulative Dose and PFS we discovered (as shwon in Figure 11), may be due to the fact that the longer the PFS a patient has, the more dosage of treatment they will receive overtime. However, the actual causal relationship should be further examine by causal inference analysis to verify this preliminary conclusion. 
+
+
 
