@@ -6,3 +6,4 @@ git_ssh
 git_ssh.pub
 .DS_Store
 docs
+inst/doc
