@@ -17,7 +17,9 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(bis620)
 # devtools::build_vignettes()
+# devtools::build()
 # remotes::install_local(build_vignettes = TRUE, force = TRUE)
+# devtools::install(build_vignettes = TRUE)
 # browseVignettes()
 ```
 
