@@ -35,29 +35,52 @@ library(bis620)
 ## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+This package includes ae, aeendpt, asendpt data sets from study
+`NCT00460265`
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+head(ae[,1:8])
+#>    STUDYID SITEID    SUBJID AGE AGECATCD     AGECAT SEXCD    SEX
+#> 1 20050251   1101 221101001  55        1 < 65 years     F Female
+#> 2 20050251   1101 221101001  55        1 < 65 years     F Female
+#> 3 20050251   1101 221101001  55        1 < 65 years     F Female
+#> 4 20050251   1101 221101001  55        1 < 65 years     F Female
+#> 5 20050251   1101 221101001  55        1 < 65 years     F Female
+#> 6 20050251   1101 221101001  55        1 < 65 years     F Female
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/master/examples>.
+Using build in fuction `get_na()` we can examine the number of NA of
+each column in the data set:
 
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+    #>  STUDYID   SITEID   SUBJID      AGE AGECATCD   AGECAT    SEXCD      SEX 
+    #>        0        0        0        0        0        0        0        0 
+    #>     RACE  TRTDOSE TRTFRQCD  TRTFREQ    TRTCD      TRT   ATRTCD     ATRT 
+    #>        0     4065        0        0        0        0        0        0 
+    #> PRHNTRTI PRHNTRTC CARBOADD  CARBO2D B_ECOGCD   B_ECOG B_ECOGCT BECOGICD 
+    #>        0        0        0        0        0        0        0        0 
+    #>  B_ECOGI  BECGICT DIAGTYCD DIAGTYPE TUMCATCD   TUMCAT TUMCTCDI  TUMCATI 
+    #>        0        0        0        0        0        0        0        0 
+    #>  DSTATUS     PMAB EVALSAFE EVALEGFR    HPVCD      HPV   TRTDUR FDOSPMDY 
+    #>        0        0        0        0     2885        0        0     7439 
+    #>    AEANY AELINENO    PHASE  PHASEND   AESTDY  AESTDYI   AEENDY  AEENDYI 
+    #>        0      196        0        0      358        1     1580     1415 
+    #>   AETERM    AELLT     AEPT    AEHLT   AEHLGT  AELLTCD    AESOC    AEDUR 
+    #>        0        0        0        0        0        8        0     1751 
+    #>   AEDURI   AECONT AENUMINF AENUMCTX  AEPRIOR  AESKDCD    AESKD AESKINCD 
+    #>     1416        0        1        1        0        0        0        0 
+    #>   AESKIN AEOCUICD   AEOCUI AEEYEDCD   AEEYED  AEINTMT  AESEVCD    AESEV 
+    #>        0        0        0        0        0        0        0        0 
+    #>    AEREL  AERELCM AEINFRCD   AEINFR AESTOMCD   AESTOM AECALCCD   AECALC 
+    #>        0        0        0        0        0        0        0        0 
+    #> AEMAGNCD   AEMAGN AEKALECD   AEKALE  AEARFCD    AEARF AEDEHYCD   AEDEHY 
+    #>        0        0        0        0        0        0        0        0 
+    #> AEILDSCD   AEILDS AEARTECD   AEARTE AEVETECD   AEVETE AEVSETCD   AEVSET 
+    #>        0        0        0        0        0        0        0        0 
+    #> AECARDCD   AECARD AEACTCDS  AEACT01  AEACT02  AEACT03  AEACT04  AEACT05 
+    #>        0        0        0        0        0        0        0        0 
+    #>  AEACT06  AEACT07  AEACT10  AEACT72  AEACT81  AEACT82  AEACT83  AEACT84 
+    #>        0        0        0        0        0        0        0        0 
+    #>  AEACT85  AEACT88    AESER  SAELIFE  SAEPROG   AEWDOS   AECDOS AEFIWDOS 
+    #>        0        0        0        0        0     4238     4238      457 
+    #> AEFICDOS AECSWDOS AECSCDOS AECBWDOS AECBCDOS MEDDRA_V 
+    #>      457      435      435     8656     8656        0
