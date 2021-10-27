@@ -14,14 +14,15 @@ Imports:
   dplyr,
   ggplot2,
   purrr,
-  tibble,
   tidyr,
-  plotly,
-  ggstatsplot
+  plotly
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
+    ggcorrplot,
+    ggstatsplot,
+    tibble
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Depends: 
