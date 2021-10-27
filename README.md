@@ -28,7 +28,7 @@ devtools::install_github("hugoclho/bis620")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you
 
 ``` r
 library(bis620)

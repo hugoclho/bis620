@@ -83,17 +83,22 @@ After reading the documentation of this study, we will explore this dataset with
 
 # Define a path name and use grep() to detect the sas7bdat dataset in the folder,
 # then append everything from the dataset into a list
-path <- "/Users/hugoho/OneDrive/Yale/2021 Fall/BIS 620 Data Science Software Systems/Assignments/Assignment 1/NCT00460265"
 
-fns <- dir(path)
-fns <- fns[grep("sas7bdat", fns)]
+# path <- "data-raw/NCT00460265"
+# 
+# fns <- dir(path)
+# fns <- fns[grep("sas7bdat", fns)]
+# 
+# data_list <- map(fns, ~ read_sas(file.path(path, .x)))
+# 
+# # Get rid of the ".sas7bdat" by replacing with " ", prefix are the names of the sas dataset
+# # Then, assign them to the names in each of the data_list
+# prefix <- gsub(".sas7bdat", "", fns)
+# names(data_list) <- prefix
 
-data_list <- map(fns, ~ read_sas(file.path(path, .x)))
-
-# Get rid of the ".sas7bdat" by replacing with " ", prefix are the names of the sas dataset
-# Then, assign them to the names in each of the data_list
-prefix <- gsub(".sas7bdat", "", fns)
-names(data_list) <- prefix
+data("ae")
+data("aeendpt")
+data("asendpt")
 ```
 
 ### Combining Datasets 
@@ -101,14 +106,14 @@ names(data_list) <- prefix
 In this part, we examined throughout different data sets in the study and combine columns we needed for further exploration.
 
 ```{r}
-dose <- data_list$asendpt %>% 
+dose <- asendpt %>% 
   select(STUDYID, SUBJID, AGE, ATRT, contains('DOSE')) %>% 
   select(STUDYID, SUBJID, AGE, ATRT, CDOSE, CWDOSE)
 
-aeendpt <- data_list$aeendpt %>% 
+aeendpt <- aeendpt %>% 
   select(STUDYID, SUBJID, TRTDUR, ATRT, PFSDYLRE)
 
-aevent <- data_list$ae %>%
+aevent <- ae %>%
   mutate(AESEV = 
            factor(AESEV, 
                   levels = c("Mild", "Moderate", "Severe", 
@@ -163,14 +168,14 @@ desc_stats
 ### Data Exploration and Visualization:
 
 ```{r}
-ae_list <-  as.data.frame(table(data_list$ae$AETERM))
+ae_list <-  as.data.frame(table(ae$AETERM))
 names(ae_list) <-  c('AE','Freq')
 
 # extract top 20 adverse events
 head(arrange(ae_list,desc(Freq)), 20)
 ae_top5 <- as.character(head(arrange(ae_list,desc(Freq)), 20)[[1]])
 
-ae_top5_df <- data_list$ae %>% filter(AETERM%in% ae_top5)
+ae_top5_df <- ae %>% filter(AETERM%in% ae_top5)
 
 p_AEbyTRT <- ggplot(aes(x=AETERM, fill=ATRT), data=ae_top5_df) +
   geom_bar(position = position_fill()) + 
