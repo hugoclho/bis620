@@ -25,8 +25,8 @@ NULL
 #'
 #' @description These data were generated from the Panitumumab
 #' study. The columns have shuffled.
-#' @name aeendpt
+#' @name asendpt
 #' @docType data
-#' @rdname aeendpt
+#' @rdname asendpt
 #' @references NCT00460265
 NULL
