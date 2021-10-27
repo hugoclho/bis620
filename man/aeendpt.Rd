@@ -5,9 +5,14 @@
 \alias{aeendpt}
 \title{A Longitudinal AE-Endpoint Data Set}
 \description{
-These data were generated from the panitumumab
+These data were generated from the Panitumumab
+study. The columns have shuffled.
+
+These data were generated from the Panitumumab
 study. The columns have shuffled.
 }
 \references{
+NCT00460265
+
 NCT00460265
 }

@@ -5,7 +5,7 @@
 \alias{ae}
 \title{A Longitudinal AE Data Set}
 \description{
-These data were generated from the panitumumab
+These data were generated from the Panitumumab
 study. The columns have shuffled.
 }
 \references{
