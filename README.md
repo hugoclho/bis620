@@ -28,14 +28,15 @@ devtools::install_github("hugoclho/bis620")
 
 ## Example
 
-This is a basic example which shows you
+This is a basic example which shows you the overview of the package
+`bis620`
 
 ``` r
 library(bis620)
 ## basic example code
 ```
 
-This package includes ae, aeendpt, asendpt data sets from study
+This package includes data sets `ae`, `aeendpt`, `asendpt` from study
 `NCT00460265`
 
 ``` r

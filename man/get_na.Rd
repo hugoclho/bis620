@@ -16,17 +16,10 @@ missing_list a list of number of missing values of each column
 This function helps examine the number of missing values within factors within a data set
 }
 \examples{
-get_na(data)
 
 df <- data.frame(a = c(1,2,3), b = c(NA,0,1), c = c(NA, NA, 0))
 df
-  a  b  c
-  1  NA NA
-  2  0  NA
-  3  1  0
 
 get_na(df)
-  a b c
-  0 1 2
 
 }
