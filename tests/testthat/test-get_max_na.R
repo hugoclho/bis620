@@ -1,4 +1,4 @@
-data(ae)
+data("ae")
 
 missing_list <- colSums(as.data.frame(is.na(data)))
 result <- missing_list[missing_list == max(missing_list)]
