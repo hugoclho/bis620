@@ -2,18 +2,18 @@
 % Please edit documentation in R/get_max_na.R
 \name{get_max_na}
 \alias{get_max_na}
-\title{Get max column}
+\title{Get columns with the maximum number of NA}
 \usage{
 get_max_na(data)
 }
 \arguments{
-\item{data}{select a data set containing columns to get correlation heat map}
+\item{data}{select a data set containing columns to get maximum number of NA}
 }
 \value{
-heat_map correlation heat map
+min_list columns with the maximum number of NA
 }
 \description{
-This function helps create correlation heat map factors within a data set
+This function helps get the columns with the maximum number of NA within a data set
 }
 \examples{
 
