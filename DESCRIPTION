@@ -22,8 +22,7 @@ Suggests:
     testthat (>= 3.0.0),
     ggcorrplot,
     ggstatsplot,
-    tibble,
-    vdiffr
+    tibble
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Depends: 
