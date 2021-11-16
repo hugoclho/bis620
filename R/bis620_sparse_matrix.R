@@ -130,37 +130,49 @@ setMethod('print', signature(x = 'bis620_sparse_matrix'), function(x) {
 #' @param x  bis620_sparse_matrix or normal matrix
 #' @param y  bis620_sparse_matrix or normal matrix
 #'
-#' @export +
-`+` <- function(x, y) {
-  if (is.bis620_sparse_matrix(x)){
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("+")(sparse2dense(x) , sparse2dense(y))
-      result = dense2sparse(result)
-    }else{
-      result = .Primitive("+")(sparse2dense(x) , y)
-    }
-  }else{
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("+")(x , sparse2dense(y))
-    }else{
-      result = .Primitive("+")(x, y)
-    }
-  }
-  result
-}
+#' @exportMethod +
+#'
+# `+` <- function(x, y) {
+#   if (is.bis620_sparse_matrix(x)){
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("+")(sparse2dense(x) , sparse2dense(y))
+#       result = dense2sparse(result)
+#     }else{
+#       result = .Primitive("+")(sparse2dense(x) , y)
+#     }
+#   }else{
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("+")(x , sparse2dense(y))
+#     }else{
+#       result = .Primitive("+")(x, y)
+#     }
+#   }
+#   result
+# }
 
 
-# setMethod("+", signature(e1 = 'bis620_sparse_matrix', e2 = 'bis620_sparse_matrix'), function(x) {
-#   callGeneric(sparse2dense(e1) , sparse2dense(e2))
-# })
-#
-# setMethod('+', signature(x = 'bis620_sparse_matrix', y = 'ANY'), function(x,y) {
-#   callGeneric(x,y)
-# })
-#
-# setMethod('+', signature(x = 'ANY', y = 'bis620_sparse_matrix'), function(x,y) {
-#   callGeneric(x,y)
-# })
+setMethod(
+  "+",
+  signature(e1 = 'bis620_sparse_matrix', e2 = 'bis620_sparse_matrix'),
+  function(e1, e2) {
+    result = .Primitive("+")(sparse2dense(e1) , sparse2dense(e2))
+    dense2sparse(result)
+})
+
+setMethod(
+  "+",
+  signature(e1 = 'bis620_sparse_matrix', e2 = 'ANY'),
+  function(e1, e2) {
+    .Primitive("+")(sparse2dense(e1) , (e2))
+  })
+
+setMethod(
+  "+",
+  signature(e1 = 'ANY', e2 = 'bis620_sparse_matrix'),
+  function(e1, e2) {
+    .Primitive("+")((e1) , sparse2dense(e2))
+  })
+
 
 
 ################################################################################################
@@ -187,25 +199,47 @@ setMethod('print', signature(x = 'bis620_sparse_matrix'), function(x) {
 #' @param x  bis620_sparse_matrix or normal matrix
 #' @param y  bis620_sparse_matrix or normal matrix
 #'
-#' @export `-`
+#' @exportMethod `-`
 #' @rdname minus
-`-` <- function(x, y) {
-  if (is.bis620_sparse_matrix(x)){
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("-")(sparse2dense(x) , sparse2dense(y))
-      result = dense2sparse(result)
-    }else{
-      result = .Primitive("-")(sparse2dense(x) , y)
-    }
-  }else{
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("-")(x , sparse2dense(y))
-    }else{
-      result = .Primitive("-")(x, y)
-    }
-  }
-  result
-}
+# `-` <- function(x, y) {
+#   if (is.bis620_sparse_matrix(x)){
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("-")(sparse2dense(x) , sparse2dense(y))
+#       result = dense2sparse(result)
+#     }else{
+#       result = .Primitive("-")(sparse2dense(x) , y)
+#     }
+#   }else{
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("-")(x , sparse2dense(y))
+#     }else{
+#       result = .Primitive("-")(x, y)
+#     }
+#   }
+#   result
+# }
+
+setMethod(
+  "-",
+  signature(e1 = 'bis620_sparse_matrix', e2 = 'bis620_sparse_matrix'),
+  function(e1, e2) {
+    result = .Primitive("-")(sparse2dense(e1) , sparse2dense(e2))
+    dense2sparse(result)
+  })
+
+setMethod(
+  "-",
+  signature(e1 = 'bis620_sparse_matrix', e2 = 'ANY'),
+  function(e1, e2) {
+    .Primitive("-")(sparse2dense(e1) , (e2))
+  })
+
+setMethod(
+  "-",
+  signature(e1 = 'ANY', e2 = 'bis620_sparse_matrix'),
+  function(e1, e2) {
+    .Primitive("-")((e1) , sparse2dense(e2))
+  })
 
 ################################################################################################
 ## 3.element wise times `*`
@@ -231,24 +265,46 @@ setMethod('print', signature(x = 'bis620_sparse_matrix'), function(x) {
 #' @param x  bis620_sparse_matrix or normal matrix
 #' @param y  bis620_sparse_matrix or normal matrix
 #'
-#' @export *
-`*` <- function(x, y) {
-  if (is.bis620_sparse_matrix(x)){
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("*")(sparse2dense(x) , sparse2dense(y))
-      result = dense2sparse(result)
-    }else{
-      result = .Primitive("*")(sparse2dense(x) , y)
-    }
-  }else{
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("*")(x , sparse2dense(y))
-    }else{
-      result = .Primitive("*")(x, y)
-    }
-  }
-  result
-}
+#' @exportMethod *
+# `*` <- function(x, y) {
+#   if (is.bis620_sparse_matrix(x)){
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("*")(sparse2dense(x) , sparse2dense(y))
+#       result = dense2sparse(result)
+#     }else{
+#       result = .Primitive("*")(sparse2dense(x) , y)
+#     }
+#   }else{
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("*")(x , sparse2dense(y))
+#     }else{
+#       result = .Primitive("*")(x, y)
+#     }
+#   }
+#   result
+# }
+
+setMethod(
+  "*",
+  signature(e1 = 'bis620_sparse_matrix', e2 = 'bis620_sparse_matrix'),
+  function(e1, e2) {
+    result = .Primitive("*")(sparse2dense(e1) , sparse2dense(e2))
+    dense2sparse(result)
+  })
+
+setMethod(
+  "*",
+  signature(e1 = 'bis620_sparse_matrix', e2 = 'ANY'),
+  function(e1, e2) {
+    .Primitive("*")(sparse2dense(e1) , (e2))
+  })
+
+setMethod(
+  "*",
+  signature(e1 = 'ANY', e2 = 'bis620_sparse_matrix'),
+  function(e1, e2) {
+    .Primitive("*")((e1) , sparse2dense(e2))
+  })
 
 ################################################################################################
 ## 4.element wise divide `/`
@@ -276,24 +332,46 @@ setMethod('print', signature(x = 'bis620_sparse_matrix'), function(x) {
 #' @param x  bis620_sparse_matrix or normal matrix
 #' @param y  bis620_sparse_matrix or normal matrix
 #'
-#' @export /
-`/` <- function(x, y) {
-  if (is.bis620_sparse_matrix(x)){
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("/")(sparse2dense(x) , sparse2dense(y))
-      result = dense2sparse(result)
-    }else{
-      result = .Primitive("/")(sparse2dense(x) , y)
-    }
-  }else{
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("/")(x , sparse2dense(y))
-    }else{
-      result = .Primitive("/")(x, y)
-    }
-  }
-  result
-}
+#' @exportMethod /
+# `/` <- function(x, y) {
+#   if (is.bis620_sparse_matrix(x)){
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("/")(sparse2dense(x) , sparse2dense(y))
+#       result = dense2sparse(result)
+#     }else{
+#       result = .Primitive("/")(sparse2dense(x) , y)
+#     }
+#   }else{
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("/")(x , sparse2dense(y))
+#     }else{
+#       result = .Primitive("/")(x, y)
+#     }
+#   }
+#   result
+# }
+
+setMethod(
+  "/",
+  signature(e1 = 'bis620_sparse_matrix', e2 = 'bis620_sparse_matrix'),
+  function(e1, e2) {
+    result = .Primitive("/")(sparse2dense(e1) , sparse2dense(e2))
+    dense2sparse(result)
+  })
+
+setMethod(
+  "/",
+  signature(e1 = 'bis620_sparse_matrix', e2 = 'ANY'),
+  function(e1, e2) {
+    .Primitive("/")(sparse2dense(e1) , (e2))
+  })
+
+setMethod(
+  "/",
+  signature(e1 = 'ANY', e2 = 'bis620_sparse_matrix'),
+  function(e1, e2) {
+    .Primitive("/")((e1) , sparse2dense(e2))
+  })
 
 ################################################################################################
 ## 5.matrix multiplication `%*%`
