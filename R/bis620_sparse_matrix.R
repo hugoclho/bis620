@@ -18,7 +18,7 @@
 #' @export bis620_sparse_matrix
 bis620_sparse_matrix <- function(i, j, x) {
   # new() is creating a new object
-  new("bis620_sparse_matrix",
+  methods::new("bis620_sparse_matrix",
       i = as.integer(i),
       j = as.integer(j),
       x = as.numeric(x))
@@ -188,6 +188,7 @@ setMethod('print', signature(x = 'bis620_sparse_matrix'), function(x) {
 #' @param y  bis620_sparse_matrix or normal matrix
 #'
 #' @export `-`
+#' @rdname minus
 `-` <- function(x, y) {
   if (is.bis620_sparse_matrix(x)){
     if (is.bis620_sparse_matrix(y)){
@@ -316,7 +317,7 @@ setMethod('print', signature(x = 'bis620_sparse_matrix'), function(x) {
   }else{
     if (is.bis620_sparse_matrix(y)){
       result = .Primitive("%*%")(x , sparse2dense(y))
-    }else{s
+    }else{
       result = .Primitive("%*%")(x, y)
     }
   }
@@ -343,6 +344,7 @@ setMethod('%*%', signature(x = 'ANY', y = 'bis620_sparse_matrix'), function(x,y)
 #   result
 # }
 #' @title matrix transpose `t()` for bis620_sparse_matrix
+#' @param x  bis620_sparse_matrix
 #' @exportMethod t
 setMethod('t', signature(x = 'bis620_sparse_matrix'), function(x) {
   t.bis620_sparse_matrix(x)
@@ -351,7 +353,7 @@ setMethod('t', signature(x = 'bis620_sparse_matrix'), function(x) {
 `t.bis620_sparse_matrix` <- function(x) {
   newi = x@j
   newj = x@i
-  result = new("bis620_sparse_matrix",
+  result = methods::new("bis620_sparse_matrix",
                   i = newi,
                   j = newj,
                   x = x@x)

@@ -6,6 +6,9 @@
 \usage{
 \S4method{t}{bis620_sparse_matrix}(x)
 }
+\arguments{
+\item{x}{bis620_sparse_matrix}
+}
 \description{
 matrix transpose `t()` for bis620_sparse_matrix
 }
