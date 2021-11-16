@@ -127,8 +127,8 @@ setMethod('print', signature(x = 'bis620_sparse_matrix'), function(x) {
 #' @title matrix addition of bis620_sparse_matrix
 #'
 #' @description This function performs plus operation of bis620_sparse_matrix
-#' @param x  bis620_sparse_matrix or normal matrix
-#' @param y  bis620_sparse_matrix or normal matrix
+#' @param e1  bis620_sparse_matrix or normal matrix
+#' @param e2  bis620_sparse_matrix or normal matrix
 #'
 #' @exportMethod +
 #'
@@ -196,8 +196,8 @@ setMethod(
 #' @title matrix subtraction of bis620_sparse_matrix
 #'
 #' @description This function performs subtraction operation of bis620_sparse_matrix
-#' @param x  bis620_sparse_matrix or normal matrix
-#' @param y  bis620_sparse_matrix or normal matrix
+#' @param e1  bis620_sparse_matrix or normal matrix
+#' @param e2  bis620_sparse_matrix or normal matrix
 #'
 #' @exportMethod `-`
 #' @rdname minus
@@ -262,8 +262,8 @@ setMethod(
 #' @title matrix multiplication of bis620_sparse_matrix
 #'
 #' @description This function performs subtraction operation of bis620_sparse_matrix
-#' @param x  bis620_sparse_matrix or normal matrix
-#' @param y  bis620_sparse_matrix or normal matrix
+#' @param e1  bis620_sparse_matrix or normal matrix
+#' @param e2  bis620_sparse_matrix or normal matrix
 #'
 #' @exportMethod *
 # `*` <- function(x, y) {
@@ -329,8 +329,8 @@ setMethod(
 #' @title matrix division of bis620_sparse_matrix
 #'
 #' @description This function performs subtraction operation of bis620_sparse_matrix
-#' @param x  bis620_sparse_matrix or normal matrix
-#' @param y  bis620_sparse_matrix or normal matrix
+#' @param e1  bis620_sparse_matrix or normal matrix
+#' @param e2  bis620_sparse_matrix or normal matrix
 #'
 #' @exportMethod /
 # `/` <- function(x, y) {

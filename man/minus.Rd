@@ -7,9 +7,9 @@
 \S4method{-}{bis620_sparse_matrix,bis620_sparse_matrix}(e1, e2)
 }
 \arguments{
-\item{x}{bis620_sparse_matrix or normal matrix}
+\item{e1}{bis620_sparse_matrix or normal matrix}
 
-\item{y}{bis620_sparse_matrix or normal matrix}
+\item{e2}{bis620_sparse_matrix or normal matrix}
 }
 \description{
 This function performs subtraction operation of bis620_sparse_matrix
