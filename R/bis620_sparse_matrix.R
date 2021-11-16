@@ -384,31 +384,53 @@ setMethod(
 #'
 #' @exportMethod %*%
 
-`mat_mult.bis620_sparse_matrix` <- function(x, y) {
-  if (is.bis620_sparse_matrix(x)){
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("%*%")(sparse2dense(x) , sparse2dense(y))
-      result = dense2sparse(result)
-    }else{
-      result = .Primitive("%*%")(sparse2dense(x) , y)
-    }
-  }else{
-    if (is.bis620_sparse_matrix(y)){
-      result = .Primitive("%*%")(x , sparse2dense(y))
-    }else{
-      result = .Primitive("%*%")(x, y)
-    }
-  }
-  result
-}
+# `mat_mult.bis620_sparse_matrix` <- function(x, y) {
+#   if (is.bis620_sparse_matrix(x)){
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("%*%")(sparse2dense(x) , sparse2dense(y))
+#       result = dense2sparse(result)
+#     }else{
+#       result = .Primitive("%*%")(sparse2dense(x) , y)
+#     }
+#   }else{
+#     if (is.bis620_sparse_matrix(y)){
+#       result = .Primitive("%*%")(x , sparse2dense(y))
+#     }else{
+#       result = .Primitive("%*%")(x, y)
+#     }
+#   }
+#   result
+# }
 
-setMethod('%*%', signature(x = 'bis620_sparse_matrix', y = 'ANY'), function(x,y) {
-  mat_mult.bis620_sparse_matrix(x,y)
-})
+# setMethod('%*%', signature(x = 'bis620_sparse_matrix', y = 'ANY'), function(x,y) {
+#   mat_mult.bis620_sparse_matrix(x,y)
+# })
+#
+# setMethod('%*%', signature(x = 'ANY', y = 'bis620_sparse_matrix'), function(x,y) {
+#   mat_mult.bis620_sparse_matrix(x,y)
+# })
 
-setMethod('%*%', signature(x = 'ANY', y = 'bis620_sparse_matrix'), function(x,y) {
-  mat_mult.bis620_sparse_matrix(x,y)
-})
+setMethod(
+  "%*%",
+  signature(x = 'bis620_sparse_matrix', y = 'bis620_sparse_matrix'),
+  function(x, y) {
+    result = .Primitive("%*%")(sparse2dense(x) , sparse2dense(y))
+    dense2sparse(result)
+  })
+
+setMethod(
+  "%*%",
+  signature(x = 'bis620_sparse_matrix', y = 'ANY'),
+  function(x, y) {
+    .Primitive("%*%")(sparse2dense(x) , (y))
+  })
+
+setMethod(
+  "%*%",
+  signature(x = 'ANY', y = 'bis620_sparse_matrix'),
+  function(x, y) {
+    .Primitive("%*%")((x) , sparse2dense(y))
+  })
 
 ################################################################################################
 ## 6.matrix transpose `t()`
