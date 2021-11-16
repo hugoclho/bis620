@@ -131,7 +131,7 @@ print(x1)
 # all original test cases: 
 x1 + x1
 print(x1 + x1)
-x1 - x1
+x1 - x4
 t(x1) %*% x1
 print(t(x1) %*% x1)
 x1 %*% x1
