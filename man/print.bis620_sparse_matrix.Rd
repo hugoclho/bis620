@@ -4,7 +4,7 @@
 \alias{print.bis620_sparse_matrix}
 \title{Print bis620_sparse_matrix}
 \usage{
-print.bis620_sparse_matrix(x)
+\method{print}{bis620_sparse_matrix}(x)
 }
 \arguments{
 \item{x}{bis620_sparse_matrix}

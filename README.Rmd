@@ -121,3 +121,16 @@ x3 %*% x3
 x1 + x4
 x1 %*% x4
 ```
+
+## Final Homework Proposal
+Find a real world data set. Call Python in R and finish data cleaning and exploration under Python. Import data to R and create R6 object and related methods. 
+
+
+
+
+
+
+
+
+
+
