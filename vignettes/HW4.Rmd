@@ -1,0 +1,299 @@
+---
+title: "BIS 620 Homework 4 and Project Proposal"
+author: "Hugo He, Yuxuan Wang"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HW4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bis620)
+```
+
+Team members:
+
+- Hugo He (zh264)
+- Yuxuan Wang (yw742)
+
+The homework should be a vignette called hw4. The corresponding hw4.Rmd file can assume that there is a bis620 conda environment with the same packages installed as the one in class. At the top of the homework document, please clearly indicate your team members with yale ids.
+
+1. Create a new matrix class that is a numpy matrix that performs the same matrix operations as in the last homework in Python. Show that it works with the same test as in the last homework where, instead of sparse matrices, you use numpy matrices.
+
+ - Add arithmetic operators `+`, `-`, `/`, and `*` along with `%*%` so that the matrix behaves like a regular Python matrix.
+ - Add a print function so that it's easier to see the layout.
+
+
+```{r}
+library(reticulate)
+use_condaenv("bis620", required = TRUE)
+np = import("numpy", convert = FALSE)
+```
+
+
+```{r}
+setClass(Class = "bis620_numpy_matrix", 
+         slots = list(x = "ANY"))
+bis620_numpy_matrix <- function(x) {
+  # new() is creating a new object
+  new("bis620_numpy_matrix", x = x)
+}
+
+# plus
+setMethod(
+  f = "+",
+  signature = c(e1 = "bis620_numpy_matrix", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$add(e1@x, e2)
+  }
+)
+
+setMethod(
+  f = "+",
+  signature = c(e1 = "ANY", e2 = "bis620_numpy_matrix"),
+  definition = function(e1, e2){
+    np$add(e1, e2@x)
+  }
+)
+
+setMethod(
+  f = "+",
+  signature = c(e1 = "bis620_numpy_matrix", e2 = "bis620_numpy_matrix"),
+  definition = function(e1, e2){
+    np$add(e1@x, e2@x)
+  }
+)
+
+setMethod(
+  f = "+",
+  signature = c(e1 = "ANY", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$add(e1, e2)
+  }
+)
+```
+
+```{r}
+# subtraction
+setMethod(
+  f = "-",
+  signature = c(e1 = "bis620_numpy_matrix", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$subtract(e1@x, e2)
+  }
+)
+
+setMethod(
+  f = "-",
+  signature = c(e1 = "ANY", e2 = "bis620_numpy_matrix"),
+  definition = function(e1, e2){
+    np$subtract(e1, e2@x)
+  }
+)
+
+setMethod(
+  f = "-",
+  signature = c(e1 = "bis620_numpy_matrix", e2 = "bis620_numpy_matrix"),
+  definition = function(e1, e2){
+    np$subtract(e1@x, e2@x)
+  }
+)
+
+setMethod(
+  f = "-",
+  signature = c(e1 = "ANY", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$subtract(e1, e2)
+  }
+)
+```
+
+```{r}
+# division
+setMethod(
+  f = "/",
+  signature = c(e1 = "bis620_numpy_matrix", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$divide(e1@x, e2)
+  }
+)
+
+setMethod(
+  f = "/",
+  signature = c(e1 = "ANY", e2 = "bis620_numpy_matrix"),
+  definition = function(e1, e2){
+    np$divide(e1, e2@x)
+  }
+)
+
+setMethod(
+  f = "/",
+  signature = c(e1 = "bis620_numpy_matrix", e2 = "bis620_numpy_matrix"),
+  definition = function(e1, e2){
+    np$divide(e1@x, e2@x)
+  }
+)
+
+setMethod(
+  f = "/",
+  signature = c(e1 = "ANY", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$divide(e1, e2)
+  }
+)
+```
+
+```{r}
+# Element-wise multiplication
+setMethod(
+  f = "*",
+  signature = c(e1 = "bis620_numpy_matrix", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$multiply(e1@x, e2)
+  }
+)
+
+setMethod(
+  f = "*",
+  signature = c(e1 = "ANY", e2 = "bis620_numpy_matrix"),
+  definition = function(e1, e2){
+    np$multiply(e1, e2@x)
+  }
+)
+
+setMethod(
+  f = "*",
+  signature = c(e1 = "bis620_numpy_matrix", e2 = "bis620_numpy_matrix"),
+  definition = function(e1, e2){
+    np$multiply(e1@x, e2@x)
+  }
+)
+
+setMethod(
+  f = "*",
+  signature = c(e1 = "ANY", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$multiply(e1, e2)
+  }
+)
+```
+
+```{r}
+# Matrix multiplication
+setMethod(
+  f = "%*%",
+  signature = c(x = "bis620_numpy_matrix", y = "ANY"),
+  definition = function(x, y){
+    np$matmul(x@x, y)
+  }
+)
+
+setMethod(
+  f = "%*%",
+  signature = c(x = "ANY", y = "bis620_numpy_matrix"),
+  definition = function(x, y){
+    np$matmul(x, y@x)
+  }
+)
+
+setMethod(
+  f = "%*%",
+  signature = c(x = "bis620_numpy_matrix", y = "bis620_numpy_matrix"),
+  definition = function(x, y){
+    np$matmul(x@x, y@x)
+  }
+)
+
+setMethod(
+  f = "%*%",
+  signature = c(x = "ANY", y = "ANY"),
+  definition = function(x, y){
+    np$matmul(x, y)
+  }
+)
+```
+
+
+```{r}
+setMethod('t', signature(x = 'bis620_numpy_matrix'), function(x) {
+  np$transpose(x@x)
+})
+
+setMethod('print', signature(x = 'bis620_numpy_matrix'), function(x) {
+  print(x@x, quote=FALSE)
+  }
+)
+```
+
+```{r}
+py_mat <- np$array(list(1:3, 4:6, 7:9))
+
+# creating two matrices
+x1 <- bis620_numpy_matrix(py_mat)
+x2 <- matrix(rnorm(9), ncol = 3)
+
+# test cases
+x1 + x1
+x1 + x2
+x2 + x1
+t(x1) %*% x1
+x1 %*% x1
+x1 + t(x2)
+x1 %*% x2
+x2 %*% x1
+print(x1)
+```
+
+
+
+2. Rewrite you final project proposal so that it includes a proper research question 
+
+Research Background:
+
+- Under recent COVID-19 pandemic, hospitalization utility has been skyrocketing. Improving health care management efficiency is crucial under this particular circumstance. This study we will analyze the one critical parameter in evaluating health care management efficiency, the patient length of stay, and try to find out the correlated factors linked to patient with high LOS (length of stay) risk.
+
+By identifying the correlated factors resulting in high LOS risk, hospitals are able to provide optimized treatment plans for high risk patients to minimize LOS and lower the chance of staff/visitor infection.
+
+Research Question:
+
+- What are the most significant factors correspoding to high LOS (length of stay) risk? 
+
+Research Plan:
+
+Call Python in R and finish data cleaning and exploration under Python. Import and visualized data to R and create R6 object and related methods for `patient` class object. Conduct data analysis on `patient` objects. Also, write packages to achieve more complicated functions. Upload the R package to Github, add testing, and add continuous integration to the package.
+
+
+
+
+
+
+```{r eval=FALSE, echo=FALSE}
+# library(ggplot2)
+# library(plotly)
+# import dataset
+hc_train <- read.csv("healthcare/train_data.csv")
+# dependent variable
+hc_train$Stay <- as.factor(hc_train$Stay)
+# independent variables
+hc_train$Age <- as.factor(hc_train$Age)
+hc_train$Department <- as.factor(hc_train$Department)
+# attach(hc_train)
+# detach()
+
+# plotly(ggplot(data = hc_train, aes(x=Age, y=Stay)))
+plot(hc_train$Age, hc_train$Stay)
+plot(hc_train$Department, hc_train$Stay)
+```
+
+
+
+
+
