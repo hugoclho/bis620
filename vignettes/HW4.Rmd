@@ -181,13 +181,13 @@ setMethod(
   }
 )
 
-# setMethod(
-#   f = "*",
-#   signature = c(e1 = "ANY", e2 = "ANY"),
-#   definition = function(e1, e2){
-#     np$multiply(e1, e2)
-#   }
-# )
+setMethod(
+  f = "*",
+  signature = c(e1 = "ANY", e2 = "ANY"),
+  definition = function(e1, e2){
+    np$multiply(e1, e2)
+  }
+)
 ```
 
 ```{r}
@@ -255,10 +255,7 @@ t(x1) %*% t(x1)
 x1 * x1
 x1 %*% x1
 x1 / x1
-```
 
-
-```{r}
 x1 + x2
 x1 - x2
 x2 - x1
