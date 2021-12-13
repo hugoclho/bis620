@@ -18,11 +18,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: macOS-latest,   r: 'release', vignettes: '"--no-build-vignettes"'}
+          - {os: windows-latest, r: 'release', vignettes: '"--no-build-vignettes"'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release', vignettes: '"--no-build-vignettes"'}
+          - {os: ubuntu-latest,   r: 'release', vignettes: '"--no-build-vignettes"'}
+          - {os: ubuntu-latest,   r: 'oldrel-1', vignettes: '"--no-build-vignettes"'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -42,6 +42,8 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
+
+      - uses: r-lib/actions/check-r-package@v1
 
       - name: Show testthat output
         if: always()
