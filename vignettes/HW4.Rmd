@@ -34,7 +34,7 @@ The homework should be a vignette called hw4. The corresponding hw4.Rmd file can
 
 ```{r}
 library(reticulate)
-use_condaenv("bis620", required = TRUE)
+# use_condaenv("bis620", required = TRUE)
 np = import("numpy", convert = FALSE)
 ```
 
