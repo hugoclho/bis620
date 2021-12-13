@@ -42,11 +42,15 @@ np = import("numpy", convert = FALSE)
 ```{r}
 setClass(Class = "bis620_numpy_matrix", 
          slots = list(x = "ANY"))
+
 bis620_numpy_matrix <- function(x) {
   # new() is creating a new object
   new("bis620_numpy_matrix", x = x)
 }
+```
 
+
+```{r}
 # plus
 setMethod(
   f = "+",
