@@ -59,10 +59,7 @@ setMethod(
     np$add(e1@x, e2)
   }
 )
-```
 
-
-```{r}
 setMethod(
   f = "+",
   signature = c(e1 = "ANY", e2 = "bis620_numpy_matrix"),
@@ -70,10 +67,7 @@ setMethod(
     np$add(e1, e2@x)
   }
 )
-```
 
-
-```{r}
 setMethod(
   f = "+",
   signature = c(e1 = "bis620_numpy_matrix", e2 = "bis620_numpy_matrix"),
@@ -81,17 +75,14 @@ setMethod(
     np$add(e1@x, e2@x)
   }
 )
-```
 
-
-```{r}
-setMethod(
-  f = "+",
-  signature = c(e1 = "ANY", e2 = "ANY"),
-  definition = function(e1, e2){
-    np$add(e1, e2)
-  }
-)
+# setMethod(
+#   f = "+",
+#   signature = c(e1 = "ANY", e2 = "ANY"),
+#   definition = function(e1, e2){
+#     np$add(e1, e2)
+#   }
+# )
 ```
 
 ```{r}
@@ -120,13 +111,13 @@ setMethod(
   }
 )
 
-setMethod(
-  f = "-",
-  signature = c(e1 = "ANY", e2 = "ANY"),
-  definition = function(e1, e2){
-    np$subtract(e1, e2)
-  }
-)
+# setMethod(
+#   f = "-",
+#   signature = c(e1 = "ANY", e2 = "ANY"),
+#   definition = function(e1, e2){
+#     np$subtract(e1, e2)
+#   }
+# )
 ```
 
 ```{r}
@@ -155,13 +146,13 @@ setMethod(
   }
 )
 
-setMethod(
-  f = "/",
-  signature = c(e1 = "ANY", e2 = "ANY"),
-  definition = function(e1, e2){
-    np$divide(e1, e2)
-  }
-)
+# setMethod(
+#   f = "/",
+#   signature = c(e1 = "ANY", e2 = "ANY"),
+#   definition = function(e1, e2){
+#     np$divide(e1, e2)
+#   }
+# )
 ```
 
 ```{r}
@@ -190,13 +181,13 @@ setMethod(
   }
 )
 
-setMethod(
-  f = "*",
-  signature = c(e1 = "ANY", e2 = "ANY"),
-  definition = function(e1, e2){
-    np$multiply(e1, e2)
-  }
-)
+# setMethod(
+#   f = "*",
+#   signature = c(e1 = "ANY", e2 = "ANY"),
+#   definition = function(e1, e2){
+#     np$multiply(e1, e2)
+#   }
+# )
 ```
 
 ```{r}
@@ -225,13 +216,13 @@ setMethod(
   }
 )
 
-setMethod(
-  f = "%*%",
-  signature = c(x = "ANY", y = "ANY"),
-  definition = function(x, y){
-    np$matmul(x, y)
-  }
-)
+# setMethod(
+#   f = "%*%",
+#   signature = c(x = "ANY", y = "ANY"),
+#   definition = function(x, y){
+#     np$matmul(x, y)
+#   }
+# )
 ```
 
 
