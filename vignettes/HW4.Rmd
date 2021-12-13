@@ -303,21 +303,21 @@ Call Python in R and finish data cleaning and exploration under Python. Import a
 
 
 ```{r eval=FALSE, echo=FALSE}
-# library(ggplot2)
-# library(plotly)
-# import dataset
-hc_train <- read.csv("healthcare/train_data.csv")
-# dependent variable
-hc_train$Stay <- as.factor(hc_train$Stay)
-# independent variables
-hc_train$Age <- as.factor(hc_train$Age)
-hc_train$Department <- as.factor(hc_train$Department)
-# attach(hc_train)
-# detach()
-
-# plotly(ggplot(data = hc_train, aes(x=Age, y=Stay)))
-plot(hc_train$Age, hc_train$Stay)
-plot(hc_train$Department, hc_train$Stay)
+# # library(ggplot2)
+# # library(plotly)
+# # import dataset
+# hc_train <- read.csv("healthcare/train_data.csv")
+# # dependent variable
+# hc_train$Stay <- as.factor(hc_train$Stay)
+# # independent variables
+# hc_train$Age <- as.factor(hc_train$Age)
+# hc_train$Department <- as.factor(hc_train$Department)
+# # attach(hc_train)
+# # detach()
+# 
+# # plotly(ggplot(data = hc_train, aes(x=Age, y=Stay)))
+# plot(hc_train$Age, hc_train$Stay)
+# plot(hc_train$Department, hc_train$Stay)
 ```
 
 
