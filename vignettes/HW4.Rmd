@@ -59,7 +59,10 @@ setMethod(
     np$add(e1@x, e2)
   }
 )
+```
 
+
+```{r}
 setMethod(
   f = "+",
   signature = c(e1 = "ANY", e2 = "bis620_numpy_matrix"),
@@ -67,7 +70,10 @@ setMethod(
     np$add(e1, e2@x)
   }
 )
+```
 
+
+```{r}
 setMethod(
   f = "+",
   signature = c(e1 = "bis620_numpy_matrix", e2 = "bis620_numpy_matrix"),
@@ -75,7 +81,10 @@ setMethod(
     np$add(e1@x, e2@x)
   }
 )
+```
 
+
+```{r}
 setMethod(
   f = "+",
   signature = c(e1 = "ANY", e2 = "ANY"),
