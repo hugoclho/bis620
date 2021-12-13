@@ -181,13 +181,13 @@ setMethod(
   }
 )
 
-setMethod(
-  f = "*",
-  signature = c(e1 = "ANY", e2 = "ANY"),
-  definition = function(e1, e2){
-    np$multiply(e1, e2)
-  }
-)
+# setMethod(
+#   f = "*",
+#   signature = c(e1 = "ANY", e2 = "ANY"),
+#   definition = function(e1, e2){
+#     np$multiply(e1, e2)
+#   }
+# )
 ```
 
 ```{r}
