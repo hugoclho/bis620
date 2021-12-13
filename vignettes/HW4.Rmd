@@ -224,7 +224,7 @@ setMethod(
 
 ```{r}
 setMethod('t', signature(x = 'bis620_numpy_matrix'), function(x) {
-  np$transpose(x@x)
+  bis620_numpy_matrix(np$transpose(x1@x))
 })
 
 setMethod('print', signature(x = 'bis620_numpy_matrix'), function(x) {
@@ -234,24 +234,51 @@ setMethod('print', signature(x = 'bis620_numpy_matrix'), function(x) {
 ```
 
 ```{r}
-py_mat <- np$array(list(1:3, 4:6, 7:9))
+py_mat <- np$matrix(list(1:3, 4:6, 7:9))
 
 # creating two matrices
 x1 <- bis620_numpy_matrix(py_mat)
 x2 <- matrix(rnorm(9), ncol = 3)
+x3 <- py_mat
 
 # test cases
 x1 + x1
-x1 + x2
-x2 + x1
 t(x1) %*% x1
+t(x1) %*% t(x1)
+x1 * x1
 x1 %*% x1
-x1 + t(x2)
-x1 %*% x2
-x2 %*% x1
-print(x1)
-```
+x1 / x1
 
+x1 + x2
+x1 - x2
+x2 - x1
+t(x1) %*% x2
+x1 * x2
+x1 %*% x2
+x1 / x2
+x2 + x1
+x2 * x1
+x2 %*% x1
+x2 / x1
+
+x1 + x3
+x1 - x3
+x3 - x1
+t(x1) %*% x3
+x3 %*% t(x1)
+x1 * x3
+x1 %*% x3
+x1 / x3
+x3 + x1
+x3 * x1
+x3 %*% x1
+x3 / x1
+t(x1) * x3
+t(x1) - x3
+
+print(x1)
+
+```
 
 
 2. Rewrite you final project proposal so that it includes a proper research question 
